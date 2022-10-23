@@ -1,0 +1,39 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up OCaml
+      uses: ocaml/setup-ocaml@v1.1.11
+    
+    - name: build
+      run: make dpll
+    
+  build-test-release:
+    name: build, test and release the app
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up OCaml
+      uses: ocaml/setup-ocaml@v1.1.11
+
+    - name: pack
+      run: make pack
+      
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        files: |
+          *.zip
