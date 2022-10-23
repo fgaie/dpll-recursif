@@ -1,4 +1,5 @@
-#  https://github.com/github/gitignore/blob/main/OCaml.gitignore
+# https://github.com/github/gitignore/blob/main/OCaml.gitignore
+
 
 *.annot
 *.cmo
@@ -29,3 +30,8 @@ setup.log
 
 # Local OPAM switch
 _opam/
+
+# project-specific
+/*.zip
+/dpll
+*.cnf
