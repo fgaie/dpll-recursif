@@ -1,8 +1,5 @@
                       Mini-projet 1 : solveur DPLL récursif
                              fichier RENDU
-                       (à remplir obligatoirement)
-
-**Un mini-projet sans fichier RENDU rempli ne recevra pas de note.**
 
 Date limite: 28 octobre 2022, 23h59
 
@@ -18,18 +15,21 @@ Questions sur votre code
    et que ensuite `./dpll sudoku-4x4.cnf` donne la réponse attendue (voir
    fichier README) ?
 
-**à remplir**
+OUI
 
 ---
 
 1. Avez-vous utilisé la fonction `filter_map` (donné dans dpll.ml)
-   dans votre implémentation de `simplifie` ? 
+   dans votre implémentation de `simplifie` ?
    - Si oui, expliquez en quelques phrases en français comment vous
      l'avez utilisée.
    - Si non, expliquez en quelques phrases en français comment
      fonctionne votre implémentation de `simplifie`.
 
-**à remplir**
+OUI
+`filter_map` permet d'avoir a ecrire seulement une fonction `simplifie_clause`
+qui agit sur une clause seulement, renvoyant `None` si elle doit etre supprimee
+ou `Some` si elle doit juste etre modifiee.
 
 ---
 
@@ -42,7 +42,7 @@ Questions sur votre code
    comment ces fonctions auxiliaires sont utilisées dans votre
    implémentation de la fonction `unitaire`.
 
-**à remplir**
+Aucune fonctions auxiliaires n'ont ete utilises.
 
 ---
 
@@ -51,7 +51,9 @@ Questions sur votre code
    quelques phrases en français comment ces fonctions auxiliaires sont
    utilisées dans votre implémentation de la fonction `pur`.
 
-**à remplir**
+La fonction `litteral_pur : int -> bool` permet de tester si un litteral
+est pur. Celle-ci utilise `List.mem` pour tester si un litteral contient
+sa negation.
 
 ---
 
@@ -59,13 +61,17 @@ Questions sur votre code
    `solveur_split` et `solveur_dpll_rec` ont un comportement
    différent, et expliquez les différences entre ces deux fonctions.
 
-**à remplir**
+Les deux fonctions ont un comportement different sur la formule `[[1; 2]; [-1]]`
+
+`solveur_dpll_rec` evite de revenir en arriere en utilisant des litteraux
+qui n'ont qu'une seule interpretation possible (litteraux purs ou uniques).
+Si aucun tel litteral existe, les deux fonctions font la meme chose.
 
 ---
 
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
-**à remplir**
+NON
 
 ---
 

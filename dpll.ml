@@ -7,7 +7,7 @@ open List
    - si le résultat est `Some e', ajouter `e' au résultat ;
    - si le résultat est `None', ne rien ajouter au résultat.
    Attention, cette implémentation inverse l'ordre de la liste *)
-let filter_map filter list =
+let filter_map (filter : 'a -> 'b option) (list : 'a list) : 'b list =
   let rec aux list ret =
     match list with
     | []   -> ret
@@ -44,9 +44,7 @@ let simplifie (l : int) (clauses : int list list) : int list list =
      applique la simplification de la clause en mettant
      le littéral l à vrai
 
-     retourne None si la clause vaut 1, Some _ sinon
-     TODO: version recursive terminale *)
-
+     retourne None si la clause vaut 1, Some _ sinon *)
   let rec simplifie_clause : int list -> int list option = function
     | [] -> Some []
     | h :: t when  h = l -> None
@@ -55,11 +53,12 @@ let simplifie (l : int) (clauses : int list list) : int list list =
   in
   filter_map simplifie_clause clauses
 
+
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
 (* cette fonction ne doit pas être modifiée, sauf si vous changez
    le type de la fonction simplifie *)
-let rec solveur_split clauses interpretation =
+let rec solveur_split (clauses : int list list) (interpretation : int list) : int list option =
   (* l'ensemble vide de clauses est satisfiable *)
   if clauses = [] then Some interpretation else
   (* un clause vide n'est jamais satisfiable *)
@@ -70,6 +69,7 @@ let rec solveur_split clauses interpretation =
   match branche with
   | None -> solveur_split (simplifie (-l) clauses) ((-l)::interpretation)
   | _    -> branche
+
 
 (* tests *)
 (* let () = print_modele (solveur_split systeme []) *)
@@ -86,20 +86,12 @@ let rec unitaire : int list list -> int option = function
   | [x] :: _ -> Some x
   | _ :: t -> unitaire t
 
-(* flatten : 'a list list -> 'a list
-   applatit une liste de listes vers une list simple.
-   ne conserve pas l'ordre des elements, mais est recursive terminale
-   ex: flatten [[1]; [2; 3]; [4]] = [3; 2; 1; 4] *)
-let flatten (list : 'a list list) : 'a list =
-  fold_left rev_append [] list
-
-
 (* pur : int list list -> int
     - si `clauses' contient au moins un littéral pur, retourne
       ce littéral ;
     - sinon, renvoie None *)
 let pur (clauses : int list list) : int option =
-  let litteraux = flatten clauses |> sort_uniq Int.compare in
+  let litteraux : int list = fold_left rev_append [] clauses in
   let litteral_pur (l : int) : bool = not (mem (-l) litteraux) in
 
   match find_opt litteral_pur litteraux with
@@ -107,28 +99,35 @@ let pur (clauses : int list list) : int option =
   | Some x -> Some x
 
 
+
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec
           (clauses : int list list)
           (interpretation : int list)
         : int list option =
-  match clauses with
-  | [] -> Some interpretation
-  | _ when mem [] clauses -> None
-  | _ ->
 
-     (* liste des litteraux possible. Ne peut etre que [l] ou [l; -l] *)
-     let ls : int list =
-       match unitaire clauses with
-       | Some l -> [l]
-       | None ->
-          match pur clauses with
-          | Some l -> [l]
-          | None ->
-             let l = clauses |> List.hd |> List.hd in
-             [l; -l]
-     in
-     find_map (fun l -> solveur_dpll_rec (simplifie l clauses) (l :: interpretation)) ls
+  let solveur_litteral l =
+    solveur_dpll_rec (simplifie l clauses) (l :: interpretation) in
+
+  let solveur_split () : int list option =
+    let l = hd (hd clauses) in
+    match solveur_dpll_rec (simplifie l clauses) (l :: interpretation) with
+    | Some i -> Some i
+    | None -> solveur_dpll_rec (simplifie (-l) clauses) ((-l) :: interpretation)
+  in
+
+  (* l'ensemble vide de clauses est satisfiable *)
+  if clauses = [] then Some interpretation else
+  (* un clause vide n'est jamais satisfiable *)
+  if mem [] clauses then None else
+
+    match unitaire clauses with
+    | Some l -> solveur_litteral l
+    | None ->
+       match pur clauses with
+       | Some l -> solveur_litteral l
+       | None -> solveur_split ()
+
 
 (* tests *)
 let () = print_modele (solveur_dpll_rec systeme [])
