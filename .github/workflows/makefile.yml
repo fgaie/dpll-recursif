@@ -32,8 +32,9 @@ jobs:
     - name: pack
       run: make pack
 
-    - uses: "marvinpinto/action-automatic-releases@latest"
+    - uses: marvinpinto/action-automatic-releases@latest
       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: latest
         files: |
           *.zip
