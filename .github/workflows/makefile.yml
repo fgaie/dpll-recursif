@@ -17,7 +17,9 @@ jobs:
         ocaml-compiler: 4.14.0
         
     - name: install dependencies
-      run: opam install ocamlfind
+      run: |
+        opam install ocamlfind
+        eval $(opam env)
 
     - name: build
       run: make dpll
