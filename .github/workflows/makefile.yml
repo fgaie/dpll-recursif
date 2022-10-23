@@ -3,25 +3,26 @@ name: Makefile CI
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   build:
-    name: build
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up OCaml
-      run: |
-        sudo apt install ocaml ocaml-findlib
-    
+      uses: ocaml/setup-ocaml@v2
+      with:
+        ocaml-compiler: 4.14.0
+        
+    - name: install dependencies
+      run: opam install ocamlfind
+
     - name: build
       run: make dpll
 
   release:
-    name: release the app
     needs: build
     runs-on: ubuntu-latest
 
@@ -30,7 +31,7 @@ jobs:
 
     - name: pack
       run: make pack
-      
+
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
