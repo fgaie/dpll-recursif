@@ -52,8 +52,8 @@ Aucune fonctions auxiliaires n'ont ete utilises.
    utilisées dans votre implémentation de la fonction `pur`.
 
 La fonction `litteral_pur : int -> bool` permet de tester si un litteral
-est pur. Celle-ci utilise `List.mem` pour tester si un litteral contient
-sa negation.
+est pur. Celle-ci utilise `List.mem` pour tester si les clauses contiennent
+un litteral et sa negation.
 
 ---
 

@@ -58,7 +58,10 @@ let simplifie (l : int) (clauses : int list list) : int list list =
    exemple d'utilisation de `simplifie' *)
 (* cette fonction ne doit pas être modifiée, sauf si vous changez
    le type de la fonction simplifie *)
-let rec solveur_split (clauses : int list list) (interpretation : int list) : int list option =
+let rec solveur_split
+          (clauses : int list list)
+          (interpretation : int list)
+        : int list option =
   (* l'ensemble vide de clauses est satisfiable *)
   if clauses = [] then Some interpretation else
   (* un clause vide n'est jamais satisfiable *)
@@ -91,6 +94,7 @@ let rec unitaire : int list list -> int option = function
       ce littéral ;
     - sinon, renvoie None *)
 let pur (clauses : int list list) : int option =
+  (*                         version recursive terminale de List.concat  *)
   let litteraux : int list = fold_left rev_append [] clauses in
   let litteral_pur (l : int) : bool = not (mem (-l) litteraux) in
 
